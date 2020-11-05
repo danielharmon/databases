@@ -1,50 +1,76 @@
 /*CREATE DATABASE chat; */
 
 USE chat;
-DROP TABLE IF EXISTS `Messages`;
-CREATE TABLE `Messages` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `Message` VARCHAR(300) NOT NULL DEFAULT 'a msg',
-  `User ID` INTEGER NOT NULL DEFAULT 0,
-  `Room ID` INTEGER NOT NULL,
-  `Time Posted` TIMESTAMP NOT NULL,
+-- ---
+-- Globals
+-- ---
+
+-- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+-- SET FOREIGN_KEY_CHECKS=0;
+
+-- ---
+-- Table 'Messages'
+--
+-- ---
+
+DROP TABLE IF EXISTS `messages`;
+
+CREATE TABLE `messages` (
+  `id` INTEGER AUTO_INCREMENT,
+  `text` VARCHAR(300) ,
+  `user_id` INTEGER ,
+  `room_id` INTEGER ,
   PRIMARY KEY (`id`)
 );
+
+-- ---
+-- Table 'Users'
+--
+-- ---
 
 DROP TABLE IF EXISTS `Users`;
+
 CREATE TABLE `Users` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT  ,
-  `Username` VARCHAR(300) NULL DEFAULT 'username',
+  `id` INTEGER AUTO_INCREMENT,
+  `username` VARCHAR(300),
   PRIMARY KEY (`id`)
 );
+
+-- ---
+-- Table 'Rooms'
+--
+-- ---
+
 DROP TABLE IF EXISTS `Rooms`;
- CREATE TABLE `Rooms` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `Room Name` VARCHAR(300) NOT NULL DEFAULT 'room name',
+
+CREATE TABLE `Rooms` (
+  `id` INTEGER  AUTO_INCREMENT,
+  `roomname` VARCHAR(300),
   PRIMARY KEY (`id`)
-
-
-);
-DROP TABLE IF EXISTS `Friends`;
-CREATE TABLE `Friends` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT ,
-  `User ID` INTEGER NOT NULL,
-  `Friend ID` INTEGER NOT NULL,
-  PRIMARY KEY (`id`),
-KEY (`id`)
 );
 
-ALTER TABLE `Messages` ADD CONSTRAINT FOREIGN KEY (User ID) REFERENCES `Users` (`id`);
--- ALTER TABLE `Messages` ADD FOREIGN KEY (Room ID) REFERENCES `Rooms` (`id`);
--- ALTER TABLE `Friends` ADD FOREIGN KEY (Friend ID) REFERENCES `Users` (`id`);
+-- ---
+-- Foreign Keys
+-- ---
 
+ALTER TABLE `Messages` ADD FOREIGN KEY (user_id) REFERENCES `Users` (`id`);
+ALTER TABLE `Messages` ADD FOREIGN KEY (room_id) REFERENCES `Rooms` (`id`);
 
+-- ---
+-- Table Properties
+-- ---
 
+-- ALTER TABLE `Messages` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Users` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `Rooms` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-/* Create other tables and define schemas for them here! */
+-- ---
+-- Test Data
+-- ---
 
-
-/*  Execute this file from the command line by typing:
- *    mysql -u root < server/schema.sql
- *  to create the database and the tables.*/
-
+-- INSERT INTO `Messages` (`id`,`text`,`user id`,`room id`) VALUES
+-- ('','','','');
+-- INSERT INTO `Users` (`id`,`username`) VALUES
+-- ('','');
+-- INSERT INTO `Rooms` (`id`,`roomname`) VALUES
+-- ('','');
