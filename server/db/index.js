@@ -11,9 +11,9 @@ var mysql = require('mysql');
 // });
 
 var datab = mysql.createConnection({
-   user: 'root',
-   database: 'chat',
-   password: ''
+  user: 'root',
+  database: 'chat',
+  password: 'buddha'
 });
 
-exports.datab = datab
+exports.datab = datab;

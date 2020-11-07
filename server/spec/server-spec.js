@@ -16,11 +16,13 @@ describe('Persistent Node Chat Server', function() {
     });
     dbConnection.connect();
 
-    var tablename = "messages";
+    var tablename = 'messages';
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
     dbConnection.query('truncate ' + tablename, done);
+    
+
   });
 
   afterEach(function() {
@@ -33,7 +35,9 @@ describe('Persistent Node Chat Server', function() {
       method: 'POST',
       uri: 'http://127.0.0.1:3000/classes/users',
       json: { username: 'Valjean' }
-    }.end(), function () {
+    }, function () {
+
+
       // Post a message to the node chat server:
       request({
         method: 'POST',
@@ -57,7 +61,7 @@ describe('Persistent Node Chat Server', function() {
           expect(results.length).to.equal(1);
 
           // TODO: If you don't have a column named text, change this test.
-          expect(results[0].text).to.equal('In mercy\'s name, three days is all I need.');
+          expect(results[0].message).to.equal('In mercy\'s name, three days is all I need.');
 
           done();
         });
@@ -67,23 +71,51 @@ describe('Persistent Node Chat Server', function() {
 
   it('Should output all messages from the DB', function(done) {
     // Let's insert a message into the db
-       var queryString = "INSERT INTO messages (text) VALUES ('Men like you can never change!');";
-       var queryArgs = [];
+    var queryString = 'INSERT IGNORE INTO rooms (roomname) VALUES ("main")';
+    var secondQuery = 'INSERT INTO messages (message, room_id) VALUES ("Men like you can never change!", (SELECT id FROM rooms WHERE roomname = "main"));';
+    var queryArgs = [];
     // TODO - The exact query string and query args to use
     // here depend on the schema you design, so I'll leave
     // them up to you. */
-
-    dbConnection.query(queryString, queryArgs, function(err) {
-
-      if (err) { throw err; }
+    
+    // dbConnection.query(secondQuery, queryArgs, function(err) {
+    //   if (err) { 
+    //     console.log(err);
+    //     throw err; 
+    //   })
+    dbConnection.query(secondQuery, queryArgs, function(err) {
+      if (err) { 
+        console.log(err);
+        throw err; 
+      }
 
       // Now query the Node chat server and see if it returns
       // the message we just inserted:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
-
         var messageLog = JSON.parse(body);
-        expect(messageLog[0].text).to.equal('Men like you can never change!');
-        //expect(messageLog[0].roomname).to.equal('main');
+        expect(messageLog[0].message).to.equal('Men like you can never change!');
+        expect(messageLog[0].room_id).to.equal(15);
+        done();
+      });
+    });
+  });
+  it('Should receive error status code with bad sql statement', function(done) {
+    dbConnection.query('INSERT INTO roomss (roomname) VALUES ("newRoom");', (err) => {
+      expect(err).to.exist;
+      done();
+    });
+  });
+  it ('Should insert a user into the users table', function(done) {
+    request({
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/users',
+      json: { username: 'helen' }
+    }, function(error, response, body) {
+      //console.log('response', response);
+      expect(response['statusCode']).to.equal(200);
+      dbConnection.query('SELECT * FROM users', [], function (err, result) {
+        expect(result[0].username).to.equal('helen');
+        
         done();
       });
     });
