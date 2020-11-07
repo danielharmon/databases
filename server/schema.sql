@@ -18,8 +18,8 @@ DROP TABLE IF EXISTS `messages`;
 CREATE TABLE `messages` (
   `id` INTEGER AUTO_INCREMENT,
   `message` VARCHAR(300) ,
-  `user_id` INTEGER ,
-  `room_id` INTEGER ,
+  `userID` INTEGER ,
+  `roomID` INTEGER ,
   PRIMARY KEY (`id`)
 );
 
@@ -53,8 +53,8 @@ CREATE TABLE `Rooms` (
 -- Foreign Keys
 -- ---
 
-ALTER TABLE `Messages` ADD FOREIGN KEY (user_id) REFERENCES `Users` (`id`);
-ALTER TABLE `Messages` ADD FOREIGN KEY (room_id) REFERENCES `Rooms` (`id`);
+ALTER TABLE `Messages` ADD FOREIGN KEY (userID) REFERENCES `Users` (`id`);
+ALTER TABLE `Messages` ADD FOREIGN KEY (roomID) REFERENCES `Rooms` (`id`);
 
 -- ---
 -- Table Properties

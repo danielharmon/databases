@@ -14,9 +14,9 @@ var User = db.define('Users', {
 });
 
 var Message = db.define('Messages', {
-  user_id: Sequelize.INTEGER,
+  userID: Sequelize.INTEGER,
   message: Sequelize.STRING,
-  room_id: Sequelize.INTEGER,
+  roomID: Sequelize.INTEGER,
   
 });
 var Rooms = db.define('Rooms', {
@@ -74,8 +74,8 @@ module.exports = {
                           Message.create(
                             {
                               message: message.message,
-                              room_id: room.id,
-                              user_id: userResponse.id
+                              roomID: room.id,
+                              userID: userResponse.id
                             }
                           )
                             .then(() => {
